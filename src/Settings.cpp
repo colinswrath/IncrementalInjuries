@@ -97,7 +97,7 @@ void Settings::LoadSettings()
 {
 	CSimpleIniA ini;
 	ini.SetUnicode();
-	ini.LoadFile(R"(.\Data\SKSE\Plugins\Ow.ini)");
+	ini.LoadFile(R"(.\Data\SKSE\Plugins\IncrementalInjuries.ini)");
 
 	auto hMultIni = (float)ini.GetDoubleValue("Health", "fHealthDamageMult", 0.1);
 	auto hLimIni = (float)ini.GetDoubleValue("Health", "fHealthDamageLimit", 0.5);

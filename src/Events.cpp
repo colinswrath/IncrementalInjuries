@@ -4,7 +4,7 @@
 
 namespace Events
 {
-	RE::BSEventNotifyControl OnSleepStopEventHandler::ProcessEvent(const RE::TESSleepStopEvent* a_event, RE::BSTEventSource<RE::TESSleepStopEvent>*)
+	RE::BSEventNotifyControl OnSleepStartEventHandler::ProcessEvent(const RE::TESSleepStartEvent* a_event, RE::BSTEventSource<RE::TESSleepStartEvent>*)
 	{
 		if (!a_event)
 		{
@@ -28,6 +28,6 @@ namespace Events
 
 	void Register()
 	{
-		OnSleepStopEventHandler::Register();
+		OnSleepStartEventHandler::Register();
 	}
 }

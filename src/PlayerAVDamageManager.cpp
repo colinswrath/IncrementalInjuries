@@ -54,6 +54,8 @@ void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 	}
 }
 
+
+//TODO - REWORK TO ACCOUNT FOR OTHER EFFECTS
 void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken)
 {
 	auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
@@ -64,6 +66,7 @@ void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Acto
 	if (damageTracker->GetAVAccumulator(actorValue) >= 1)
 	{
 		float delta = floorf(damageTracker->GetAVAccumulator(actorValue));
+		logger::info("Delta: " + std::to_string(delta));
 		damageTracker->SetAVAccumulator(actorValue, 0.0f);
 
 		float currentAV = player->GetPermanentActorValue(actorValue);
@@ -79,7 +82,9 @@ void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Acto
 		else
 		{
 			damageTracker->SetAVDamage(actorValue, damageTracker->GetAVDamage(actorValue) + delta);
-			player->SetActorValue(actorValue, currentAV - delta);
+			//player->SetActorValue(actorValue, currentAV - delta);
+			player->ModActorValue(actorValue, -1 * delta);
+
 		}
 
 		Globals::SetAVUIGlobal(actorValue, (damageTracker->GetAVDamage(actorValue) / (totalAV)) * 100.00f);

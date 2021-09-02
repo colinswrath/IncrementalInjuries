@@ -15,7 +15,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * 
 		return false;
 	}
 
-	*path /= "Ow.log"sv;
+	*path /= "IncrementalInjuries.log"sv;
 	auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
 #endif
 
@@ -31,10 +31,10 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * 
 	spdlog::set_default_logger(std::move(log));
 	spdlog::set_pattern("%g(%#): [%^%l%$] %v"s);
 
-	logger::info("Ow v0.5.0");
+	logger::info("IncrementalInjuries v0.5.0");
 
 	a_info->infoVersion = SKSE::PluginInfo::kVersion;
-	a_info->name = "Ow";
+	a_info->name = "IncrementalInjuries";
 	a_info->version = 1;
 
 	if (a_skse->IsEditor()) {
@@ -66,7 +66,7 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_skse)
 {
-	logger::info("Ow loaded"sv);
+	logger::info("IncrementalInjuries loaded"sv);
 
 	SKSE::Init(a_skse);
 	SKSE::AllocTrampoline(14);

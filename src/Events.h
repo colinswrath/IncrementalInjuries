@@ -2,25 +2,25 @@
 
 namespace Events
 {
-	class OnSleepStopEventHandler : public RE::BSTEventSink<RE::TESSleepStopEvent>
+	class OnSleepStartEventHandler : public RE::BSTEventSink<RE::TESSleepStartEvent>
 	{
 	public:
-		static OnSleepStopEventHandler* GetSingleton()
+		static OnSleepStartEventHandler* GetSingleton()
 		{
-			static OnSleepStopEventHandler singleton;
+			static OnSleepStartEventHandler singleton;
 			return std::addressof(singleton);
 		}
 
-		RE::BSEventNotifyControl ProcessEvent(const RE::TESSleepStopEvent* a_event, RE::BSTEventSource<RE::TESSleepStopEvent>*) override;
+		RE::BSEventNotifyControl ProcessEvent(const RE::TESSleepStartEvent* a_event, RE::BSTEventSource<RE::TESSleepStartEvent>*) override;
 
 		static void Register()
 		{
 			RE::ScriptEventSourceHolder* eventHolder = RE::ScriptEventSourceHolder::GetSingleton();
-			eventHolder->AddEventSink(OnSleepStopEventHandler::GetSingleton());
+			eventHolder->AddEventSink(OnSleepStartEventHandler::GetSingleton());
 		}
 
 	private:
-		OnSleepStopEventHandler() = default;
+		OnSleepStartEventHandler() = default;
 	};
 
 	void Register();
