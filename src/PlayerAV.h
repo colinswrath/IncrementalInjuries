@@ -2,29 +2,6 @@
 
 namespace PlayerAV
 {
-	inline static float GetActorValueBuffs(RE::PlayerCharacter* player, int32_t integer, RE::ActorValue value)
-	{
-		using func_t = decltype(&PlayerAV::GetActorValueBuffs);
-
-		REL::Relocation<func_t> func{ REL::ID(37524) };
-
-		return func(player, integer, value);
-	}
-
-	inline static float GetActorValueTotal(RE::ActorValueOwner* owner, RE::ActorValue value)
-	{
-		using func_t = decltype(&PlayerAV::GetActorValueTotal);
-
-		REL::Relocation<func_t> func{ REL::ID(37518) };
-
-		return func(owner, value);
-	}
-
-	inline static float GetActorValueMax(RE::PlayerCharacter* player, RE::ActorValue value)
-	{
-		return GetActorValueBuffs(player, 1, value) + GetActorValueTotal(player, value);
-	}
-
 	class ActorValueDamage
 	{
 
@@ -35,6 +12,11 @@ namespace PlayerAV
 			return &damageValues;
 		}
 
+		static float GetActorValueMax(RE::PlayerCharacter* player, RE::ActorValue value)
+		{
+			return GetActorValueBuffs(player, 1, value) + GetActorValueTotal(player, value);
+		}
+
 		float GetAVDamage(RE::ActorValue av);
 
 		void SetAVDamage(RE::ActorValue av, float damage);
@@ -43,25 +25,29 @@ namespace PlayerAV
 
 		void SetAVAccumulator(RE::ActorValue av, float damage);
 
-		float GetHealthDamage();
-
-		void SetHealthDamage(float damage);
-
-		float GetStaminaDamage();
-
-		void SetStaminaDamage(float damage);
-
-		float GetMagickaDamage();
-
-		void SetMagickaDamage(float damage);
-
-
 		bool SerializeSave(SKSE::SerializationInterface* a_intfc);
 		bool SerializeSave(SKSE::SerializationInterface* a_intfc, uint32_t a_type, uint32_t a_version);
 		bool DeserializeLoad(SKSE::SerializationInterface* a_intfc);
 
-
 	private:
+
+		static float GetActorValueBuffs(RE::PlayerCharacter* player, int32_t integer, RE::ActorValue value)
+		{
+			using func_t = decltype(&GetActorValueBuffs);
+
+			REL::Relocation<func_t> func{ REL::ID(37524) };
+
+			return func(player, integer, value);
+		}
+
+		static float GetActorValueTotal(RE::ActorValueOwner* owner, RE::ActorValue value)
+		{
+			using func_t = decltype(&GetActorValueTotal);
+
+			REL::Relocation<func_t> func{ REL::ID(37518) };
+
+			return func(owner, value);
+		}
 
 		ActorValueDamage()
 		{

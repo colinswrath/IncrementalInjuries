@@ -66,8 +66,8 @@ void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Acto
 	{
 		float delta = floorf(damageTracker->GetAVAccumulator(actorValue));
 		damageTracker->SetAVAccumulator(actorValue, 0.0f);
-
-		float currentMaxAV = PlayerAV::GetActorValueMax(player, actorValue);
+		
+		float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
 		float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
 		float avAtLimit = (totalAV)*Settings::GetDamageLimit(actorValue);
 

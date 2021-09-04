@@ -8,13 +8,13 @@ namespace PlayerAV
 		switch (av)
 		{
 		case RE::ActorValue::kHealth:
-			return GetHealthDamage();
+			return _healthDamage;
 			break;
 		case RE::ActorValue::kStamina:
-			return GetStaminaDamage();
+			return _staminaDamage;
 			break;
 		case RE::ActorValue::kMagicka:
-			return GetMagickaDamage();
+			return _magickaDamage;
 			break;
 		default:
 			logger::error("GetAVDamage case not valid.");
@@ -28,13 +28,13 @@ namespace PlayerAV
 		switch (av)
 		{
 		case RE::ActorValue::kHealth:
-			SetHealthDamage(damage);
+			_healthDamage = damage;
 			break;
 		case RE::ActorValue::kStamina:
-			SetStaminaDamage(damage);
+			_staminaDamage = damage;
 			break;
 		case RE::ActorValue::kMagicka:
-			SetMagickaDamage(damage);
+			_magickaDamage = damage;
 			break;
 		default:
 			logger::error("SetAVDamage case not valid.");
@@ -60,7 +60,6 @@ namespace PlayerAV
 			return 0.0f;
 			break;
 		}
-
 		
 	}
 
@@ -83,41 +82,11 @@ namespace PlayerAV
 		}
 	}
 
-	float ActorValueDamage::GetHealthDamage()
-	{
-		return _healthDamage;
-	}
-
-	void ActorValueDamage::SetHealthDamage(float damage)
-	{
-		_healthDamage = damage;
-	}
-
-	float ActorValueDamage::GetStaminaDamage()
-	{
-		return _staminaDamage;
-	}
-
-	void ActorValueDamage::SetStaminaDamage(float damage)
-	{
-		_staminaDamage = damage;
-	}
-
-	float ActorValueDamage::GetMagickaDamage()
-	{
-		return _magickaDamage;
-	}
-
-	void ActorValueDamage::SetMagickaDamage(float damage)
-	{
-		_magickaDamage = damage;
-	}
-
 	bool ActorValueDamage::SerializeSave(SKSE::SerializationInterface* a_intfc)
 	{
 		auto damageVals = PlayerAV::ActorValueDamage::GetSingleton();
 
-		std::vector<float> damageValues = { damageVals->GetHealthDamage(), damageVals->GetStaminaDamage(), damageVals->GetMagickaDamage(), damageVals->_healthAccumulator, damageVals->_staminaAccumulator, damageVals->_magickaAccumulator };	//Prepare vector for serialization
+		std::vector<float> damageValues = { damageVals->_healthDamage, damageVals->_staminaDamage, damageVals->_magickaDamage, damageVals->_healthAccumulator, damageVals->_staminaAccumulator, damageVals->_magickaAccumulator };	//Prepare vector for serialization
 
 		if(!Serialization::Save(a_intfc, damageValues))
 		{
@@ -151,9 +120,9 @@ namespace PlayerAV
 			return false;
 		}
 
-		playerAVDamage->SetHealthDamage(damageValues[0]);
-		playerAVDamage->SetStaminaDamage(damageValues[1]);
-		playerAVDamage->SetMagickaDamage(damageValues[2]);
+		playerAVDamage->_healthDamage = damageValues[0];
+		playerAVDamage->_staminaDamage = damageValues[1];
+		playerAVDamage->_magickaDamage = damageValues[2];
 		playerAVDamage->_healthAccumulator = damageValues[3];
 		playerAVDamage->_staminaAccumulator = damageValues[4];
 		playerAVDamage->_magickaAccumulator = damageValues[5];
