@@ -111,10 +111,6 @@ set(sources
 	src/Hooks.cpp
 	src/PlayerAVDamageManager.cpp
 	src/PlayerAV.cpp
-	src/Serialization.cpp
-	src/Events.cpp
-	src/Settings.cpp
-	src/GlobalUIHandler.cpp
 	src/PapyrusPlayerAV.cpp
 )
 

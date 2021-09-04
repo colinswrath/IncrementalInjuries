@@ -46,35 +46,33 @@ void PlayerAVDamageManager::SetAccumulators(RE::ActorValue actorValue, float val
 void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 {
 	auto player = RE::PlayerCharacter::GetSingleton();
-	auto restoreVal = player->GetPermanentActorValue(actorValue) + PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue);
+	player->ModActorValue(actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
+	logger::info("Restored " + std::to_string(PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue)));
 
-	if (restoreVal > 0.0f)
-	{
-		player->SetActorValue(actorValue, restoreVal);
-	}
+	//auto restoreVal = player->GetPermanentActorValue(actorValue) + PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue);
+
+	//if (restoreVal > 0.0f)
+	//{
+	//	player->SetActorValue(actorValue, restoreVal);
+	//}
 }
 
-
-//TODO - REWORK TO ACCOUNT FOR OTHER EFFECTS
 void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken)
 {
 	auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
-	auto settings = Settings::GetSingleton();
-
-	damageTracker->SetAVAccumulator(actorValue, damageTracker->GetAVAccumulator(actorValue) + (damageTaken * settings->GetDamageMult(actorValue)));
+	damageTracker->SetAVAccumulator(actorValue, damageTracker->GetAVAccumulator(actorValue) + (damageTaken * Settings::GetDamageMult(actorValue)));
 
 	if (damageTracker->GetAVAccumulator(actorValue) >= 1)
 	{
 		float delta = floorf(damageTracker->GetAVAccumulator(actorValue));
-		logger::info("Delta: " + std::to_string(delta));
 		damageTracker->SetAVAccumulator(actorValue, 0.0f);
 
-		float currentAV = player->GetPermanentActorValue(actorValue);
-		float totalAV = currentAV + damageTracker->GetAVDamage(actorValue);
-		float avAtLimit = (totalAV)*settings->GetDamageLimit(actorValue);
+		float currentMaxAV = PlayerAV::GetActorValueMax(player, actorValue);
+		float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
+		float avAtLimit = (totalAV)*Settings::GetDamageLimit(actorValue);
 
 		//If block checks for AV reduction limit
-		if ((currentAV - delta) <= avAtLimit)		
+		if ((currentMaxAV - delta) <= avAtLimit)
 		{
 			damageTracker->SetAVDamage(actorValue, avAtLimit);
 			player->SetActorValue(actorValue, avAtLimit);
@@ -82,7 +80,6 @@ void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Acto
 		else
 		{
 			damageTracker->SetAVDamage(actorValue, damageTracker->GetAVDamage(actorValue) + delta);
-			//player->SetActorValue(actorValue, currentAV - delta);
 			player->ModActorValue(actorValue, -1 * delta);
 
 		}

@@ -2,8 +2,32 @@
 
 namespace PlayerAV
 {
+	inline static float GetActorValueBuffs(RE::PlayerCharacter* player, int32_t integer, RE::ActorValue value)
+	{
+		using func_t = decltype(&PlayerAV::GetActorValueBuffs);
+
+		REL::Relocation<func_t> func{ REL::ID(37524) };
+
+		return func(player, integer, value);
+	}
+
+	inline static float GetActorValueTotal(RE::ActorValueOwner* owner, RE::ActorValue value)
+	{
+		using func_t = decltype(&PlayerAV::GetActorValueTotal);
+
+		REL::Relocation<func_t> func{ REL::ID(37518) };
+
+		return func(owner, value);
+	}
+
+	inline static float GetActorValueMax(RE::PlayerCharacter* player, RE::ActorValue value)
+	{
+		return GetActorValueBuffs(player, 1, value) + GetActorValueTotal(player, value);
+	}
+
 	class ActorValueDamage
 	{
+
 	public:
 		static ActorValueDamage* GetSingleton()
 		{
