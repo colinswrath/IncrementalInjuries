@@ -14,7 +14,7 @@ namespace PlayerAV
 
 		static float GetActorValueMax(RE::PlayerCharacter* player, RE::ActorValue value)
 		{
-			return GetActorValueBuffs(player, 1, value) + GetActorValueTotal(player, value);
+			return GetActorValueMod(player, 1, value) + GetActorValuePerm(player, value);
 		}
 
 		float GetAVDamage(RE::ActorValue av);
@@ -31,18 +31,18 @@ namespace PlayerAV
 
 	private:
 
-		static float GetActorValueBuffs(RE::PlayerCharacter* player, int32_t integer, RE::ActorValue value)
+		static float GetActorValueMod(RE::PlayerCharacter* player, int32_t integer, RE::ActorValue value)
 		{
-			using func_t = decltype(&GetActorValueBuffs);
+			using func_t = decltype(&GetActorValueMod);
 
 			REL::Relocation<func_t> func{ REL::ID(37524) };
 
 			return func(player, integer, value);
 		}
 
-		static float GetActorValueTotal(RE::ActorValueOwner* owner, RE::ActorValue value)
+		static float GetActorValuePerm(RE::ActorValueOwner* owner, RE::ActorValue value)
 		{
-			using func_t = decltype(&GetActorValueTotal);
+			using func_t = decltype(&GetActorValuePerm);
 
 			REL::Relocation<func_t> func{ REL::ID(37518) };
 

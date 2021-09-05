@@ -12,6 +12,8 @@ public:
 	inline static float MagickaDamageMult;
 	inline static float MagickaDamageLimit;
 
+	inline static float MultMax = 5.0;
+
 	inline static float GetDamageMult(RE::ActorValue av)
 	{
 		switch (av)
@@ -57,16 +59,51 @@ public:
 		switch (av)
 		{
 		case RE::ActorValue::kHealth:
-			if (mult >= 0.0 && mult <= 1.0)
+			if (mult >= 0.0 && mult <= MultMax)
 				HealthDamageMult = mult;
 			break;
 		case RE::ActorValue::kStamina:
-			if (mult >= 0.0 && mult <= 1.0)
+			if (mult >= 0.0 && mult <= MultMax)
 				StaminaDamageMult = mult;
 			break;
 		case RE::ActorValue::kMagicka:
-			if (mult >= 0.0 && mult <= 1.0)
+			if (mult >= 0.0 && mult <= MultMax)
 				MagickaDamageMult = mult;
+			break;
+		default:
+			logger::error("SetDamageMult case invalid.");
+			break;
+		}
+	}
+
+	inline static void ModDamageMult(RE::ActorValue av, float value)
+	{
+		switch (av)
+		{
+		case RE::ActorValue::kHealth:
+			if ((Settings::GetDamageMult(RE::ActorValue::kHealth) + value) >= 0 || (Settings::GetDamageMult(RE::ActorValue::kHealth) <= MultMax))
+				HealthDamageMult = HealthDamageMult + value;
+			else if ((Settings::GetDamageMult(RE::ActorValue::kHealth) + value) > MultMax)
+				HealthDamageMult = MultMax;
+			else
+				HealthDamageMult = 0;
+			break;
+		case RE::ActorValue::kStamina:
+			if ((Settings::GetDamageMult(RE::ActorValue::kStamina) + value) >= 0 || (Settings::GetDamageMult(RE::ActorValue::kStamina) <= MultMax))
+				StaminaDamageMult = StaminaDamageMult + value;
+			else if ((Settings::GetDamageMult(RE::ActorValue::kStamina) + value) > MultMax)
+				StaminaDamageMult = MultMax;
+			else
+				StaminaDamageMult = 0;
+			break;
+		case RE::ActorValue::kMagicka:
+			if ((Settings::GetDamageMult(RE::ActorValue::kMagicka) + value) >= 0 || (Settings::GetDamageMult(RE::ActorValue::kMagicka) <= MultMax))
+				MagickaDamageMult = MagickaDamageMult + value;
+			else if ((Settings::GetDamageMult(RE::ActorValue::kMagicka) + value) > MultMax)
+				StaminaDamageMult = MultMax;
+			else
+				StaminaDamageMult = 0;
+			break;
 			break;
 		default:
 			logger::error("SetDamageMult case invalid.");

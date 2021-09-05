@@ -70,7 +70,7 @@ void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Acto
 		float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
 		float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
 		float avAtLimit = (totalAV)*Settings::GetDamageLimit(actorValue);
-
+		
 		//If block checks for AV reduction limit
 		if ((currentMaxAV - delta) <= avAtLimit)
 		{

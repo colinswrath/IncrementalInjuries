@@ -4,6 +4,7 @@
 #include "Hooks.h"
 #include "Settings.h"
 #include "GlobalUIHandler.h"
+#include "PapyrusPLayerAV.h"
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * a_skse, SKSE::PluginInfo * a_info)
 {
@@ -79,6 +80,10 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_
 	{
 		return false;
 	}
+
+	auto papyrus = SKSE::GetPapyrusInterface();
+	papyrus->Register(PapyrusPlayerAV::Register);
+	logger::info("Papyrus functions registered.");
 
 	auto serialization = SKSE::GetSerializationInterface();
 	serialization->SetUniqueID(Serialization::kOw);
