@@ -1,10 +1,10 @@
 Scriptname IncrementalInjuries Hidden
 
-; NOTE: You cannot actually access these variables from your scripts.
+;You cant access these variables from your script.
 ; Copy the definitions to your own scripts if you want to use them.
 int Property ACTOR_VALUE_HEALTH = 1 AutoReadOnly
-int Property ACTOR_VALUE_STAMINA = 1 AutoReadOnly
-int Property ACTOR_VALUE_MAGICKA = 1 AutoReadOnly
+int Property ACTOR_VALUE_STAMINA = 2 AutoReadOnly
+int Property ACTOR_VALUE_MAGICKA = 3 AutoReadOnly
 
 ;Send one of the actor value properties above for the ActorValue
 
