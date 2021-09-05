@@ -33,13 +33,22 @@ public:
 			switch (av)
 			{
 			case RE::ActorValue::kHealth:
-				HealthGlobal->value = perc;
+				if (HealthGlobal)
+				{
+					HealthGlobal->value = perc;
+				}
 				break;
 			case RE::ActorValue::kStamina:
-				StaminaGlobal->value = perc;
+				if (StaminaGlobal)
+				{
+					StaminaGlobal->value = perc;
+				}
 				break;
 			case RE::ActorValue::kMagicka:
-				MagickaGlobal->value = perc;
+				if (MagickaGlobal)
+				{
+					MagickaGlobal->value = perc;
+				}
 				break;
 			default:
 				break;
