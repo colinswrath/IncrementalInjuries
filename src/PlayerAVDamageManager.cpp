@@ -46,8 +46,12 @@ void PlayerAVDamageManager::SetAccumulators(RE::ActorValue actorValue, float val
 void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 {
 	auto player = RE::PlayerCharacter::GetSingleton();
-	player->ModActorValue(actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
+	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
+	//player->ModActorValue(actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
+	player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kTemporary, actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
+
 	logger::info("Restored " + std::to_string(PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue)));
+	avTracker->SetAVDamage(actorValue,0.0f);
 
 	//auto restoreVal = player->GetPermanentActorValue(actorValue) + PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue);
 
@@ -69,19 +73,21 @@ void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Acto
 		
 		float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
 		float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
-		float avAtLimit = (totalAV)*Settings::GetDamageLimit(actorValue);
-		
+		logger::info("total AV " + std::to_string(totalAV));
+
+		float avAtLimit = ceil((totalAV)*Settings::GetDamageLimit(actorValue));
+		logger::info("avAtLimit " + std::to_string(avAtLimit));
 		//If block checks for AV reduction limit
 		if ((currentMaxAV - delta) <= avAtLimit)
 		{
-			damageTracker->SetAVDamage(actorValue, avAtLimit);
+			damageTracker->SetAVDamage(actorValue, totalAV - avAtLimit);
 			player->SetActorValue(actorValue, avAtLimit);
 		}
 		else
 		{
 			damageTracker->SetAVDamage(actorValue, damageTracker->GetAVDamage(actorValue) + delta);
-			player->ModActorValue(actorValue, -1 * delta);
-
+			//player->ModActorValue(actorValue, -1 * delta);
+			player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kTemporary, actorValue, -1 * delta);
 		}
 
 		Globals::SetAVUIGlobal(actorValue, (damageTracker->GetAVDamage(actorValue) / (totalAV)) * 100.00f);
