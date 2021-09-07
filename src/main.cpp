@@ -32,7 +32,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * 
 	spdlog::set_default_logger(std::move(log));
 	spdlog::set_pattern("%g(%#): [%^%l%$] %v"s);
 
-	logger::info("IncrementalInjuries v0.5.0");
+	logger::info("IncrementalInjuries v1.0.0");
 
 	a_info->infoVersion = SKSE::PluginInfo::kVersion;
 	a_info->name = "IncrementalInjuries";

@@ -49,7 +49,6 @@ void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
 	player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kTemporary, actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
 
-	logger::info("Restored " + std::to_string(PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue)));
 	avTracker->SetAVDamage(actorValue,0.0f);
 }
 
@@ -65,7 +64,6 @@ float PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Act
 		damageTracker->SetAVAccumulator(actorValue, 0.0f);
 		
 		float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
-		logger::info("Max AV" + std::to_string(currentMaxAV));
 		float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
 
 		float avAtLimit = ceil((totalAV)*Settings::GetDamageLimit(actorValue));
