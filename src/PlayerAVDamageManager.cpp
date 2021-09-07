@@ -22,13 +22,13 @@ float PlayerAVDamageManager::PlayerCheckClamp(RE::PlayerCharacter* a1, int32_t a
 		switch (damagedAv)
 		{
 		case RE::ActorValue::kHealth:
-			DamagePlayerAV(a1, RE::ActorValue::kHealth, posDamageFloat);
+			return damageRecieved + DamagePlayerAV(a1, RE::ActorValue::kHealth, posDamageFloat);	//Added together to prevent double loss of AV when decreasing
 			break;
 		case RE::ActorValue::kStamina:
-			DamagePlayerAV(a1, RE::ActorValue::kStamina, posDamageFloat);
+			return damageRecieved + DamagePlayerAV(a1, RE::ActorValue::kStamina, posDamageFloat);
 			break;
 		case RE::ActorValue::kMagicka:
-			DamagePlayerAV(a1, RE::ActorValue::kMagicka, posDamageFloat);
+			return damageRecieved + DamagePlayerAV(a1, RE::ActorValue::kMagicka, posDamageFloat);
 			break;
 		default:
 			break;
@@ -47,49 +47,45 @@ void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 {
 	auto player = RE::PlayerCharacter::GetSingleton();
 	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
-	//player->ModActorValue(actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
 	player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kTemporary, actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
 
 	logger::info("Restored " + std::to_string(PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue)));
 	avTracker->SetAVDamage(actorValue,0.0f);
-
-	//auto restoreVal = player->GetPermanentActorValue(actorValue) + PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue);
-
-	//if (restoreVal > 0.0f)
-	//{
-	//	player->SetActorValue(actorValue, restoreVal);
-	//}
 }
 
-void PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken)
+float PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken)
 {
+	float delta = 0.0f;
 	auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
 	damageTracker->SetAVAccumulator(actorValue, damageTracker->GetAVAccumulator(actorValue) + (damageTaken * Settings::GetDamageMult(actorValue)));
 
 	if (damageTracker->GetAVAccumulator(actorValue) >= 1)
 	{
-		float delta = floorf(damageTracker->GetAVAccumulator(actorValue));
+		delta = floorf(damageTracker->GetAVAccumulator(actorValue));
 		damageTracker->SetAVAccumulator(actorValue, 0.0f);
 		
 		float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
+		logger::info("Max AV" + std::to_string(currentMaxAV));
 		float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
-		logger::info("total AV " + std::to_string(totalAV));
 
 		float avAtLimit = ceil((totalAV)*Settings::GetDamageLimit(actorValue));
-		logger::info("avAtLimit " + std::to_string(avAtLimit));
+
 		//If block checks for AV reduction limit
 		if ((currentMaxAV - delta) <= avAtLimit)
 		{
-			damageTracker->SetAVDamage(actorValue, totalAV - avAtLimit);
-			player->SetActorValue(actorValue, avAtLimit);
+			float damageGoal = totalAV - avAtLimit;
+			//player->SetActorValue(actorValue, avAtLimit);
+			player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kTemporary, actorValue, -1 * (damageGoal - damageTracker->GetAVDamage(actorValue)));
+			damageTracker->SetAVDamage(actorValue, damageGoal);
+			return 0;
 		}
 		else
 		{
-			damageTracker->SetAVDamage(actorValue, damageTracker->GetAVDamage(actorValue) + delta);
-			//player->ModActorValue(actorValue, -1 * delta);
 			player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kTemporary, actorValue, -1 * delta);
+			damageTracker->SetAVDamage(actorValue, damageTracker->GetAVDamage(actorValue) + delta);
 		}
 
 		Globals::SetAVUIGlobal(actorValue, (damageTracker->GetAVDamage(actorValue) / (totalAV)) * 100.00f);
 	}
+	return delta;
 }

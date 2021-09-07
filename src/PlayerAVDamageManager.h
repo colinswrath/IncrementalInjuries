@@ -9,7 +9,7 @@ public:
 
 private:
 	PlayerAVDamageManager() = default;
-	static void DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken);
+	static float DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken);
 	static float PlayerCheckClamp(RE::PlayerCharacter* a1, int32_t a2);
 	inline static REL::Relocation<decltype(PlayerCheckClamp)> _PlayerCheckClamp;
 };
