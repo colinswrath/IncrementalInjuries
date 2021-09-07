@@ -70,7 +70,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_
 	logger::info("IncrementalInjuries loaded"sv);
 
 	SKSE::Init(a_skse);
-	SKSE::AllocTrampoline(14);
+	SKSE::AllocTrampoline(28);
 	Hooks::Install();
 	Events::Register();
 	Settings::LoadSettings();
