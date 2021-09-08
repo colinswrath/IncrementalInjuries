@@ -61,6 +61,7 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 		break;
 	case SKSE::MessagingInterface::kDataLoaded :
 		Globals::LoadGlobals();
+		PlayerAVDamageManager::InstallVHook();
 		break;
 	}
 }
@@ -70,7 +71,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_
 	logger::info("IncrementalInjuries loaded"sv);
 
 	SKSE::Init(a_skse);
-	SKSE::AllocTrampoline(28);
+	SKSE::AllocTrampoline(14);
 	Hooks::Install();
 	Events::Register();
 	Settings::LoadSettings();
