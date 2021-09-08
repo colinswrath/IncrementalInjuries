@@ -29,14 +29,7 @@ void PlayerAVDamageManager::UpdateMagickaSink(RE::Actor* aActor, uint32_t aActor
 
 	if (aActor == player)
 	{
-		auto magicka = RE::ActorValue::kMagicka;
-		auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
-		if (aDelta < 0)
-		{
-			CheckAVLimit(player, damageTracker, magicka);
-		}
-		auto damage = damageTracker->GetAVDamage(magicka);
-		Globals::SetAVUIGlobal(magicka, (damage / (damageTracker->GetActorValueMax(player, magicka) + damage)) * 100.00f);
+		CheckAVLimit(player, RE::ActorValue::kMagicka, aDelta);
 	}
 
 	_OnMagickaUpdate(aActor, aActorValue, aOld, aDelta);
@@ -48,14 +41,7 @@ void PlayerAVDamageManager::UpdateStaminaSink(RE::Actor* aActor, uint32_t aActor
 	
 	if (aActor == player)
 	{
-		auto stamina = RE::ActorValue::kStamina;
-		auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
-		if (aDelta < 0)
-		{
-			CheckAVLimit(player, damageTracker, stamina);
-		}
-		auto damage = damageTracker->GetAVDamage(stamina);
-		Globals::SetAVUIGlobal(stamina, (damage / (damageTracker->GetActorValueMax(player, stamina) + damage)) * 100.00f);
+		CheckAVLimit(player, RE::ActorValue::kStamina, aDelta);
 	}
 
 	_OnStaminaUpdate(aActor, aActorValue, aOld, aDelta);
@@ -66,36 +52,35 @@ void PlayerAVDamageManager::UpdateHealthSink(RE::Actor* aActor, int32_t aActorVa
 	auto player = RE::PlayerCharacter::GetSingleton();
 	if (aActor == player)
 	{
-		auto health = RE::ActorValue::kHealth;
-		auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
-
-		if (aDelta < 0)
-		{
-			CheckAVLimit(player, damageTracker, health);
-		}
-		auto damage = damageTracker->GetAVDamage(health);
-		Globals::SetAVUIGlobal(health, (damage / (damageTracker->GetActorValueMax(player, health) + damage)) * 100.00f);
+		CheckAVLimit(player,RE::ActorValue::kHealth, aDelta);
 	}
 
 	_OnHealthUpdate(aActor,aActorValue, aOld, aDelta);
 }
 
 
-void PlayerAVDamageManager::CheckAVLimit(RE::PlayerCharacter* player, PlayerAV::ActorValueDamage* damageTracker, RE::ActorValue actorValue)
+void PlayerAVDamageManager::CheckAVLimit(RE::PlayerCharacter* player, RE::ActorValue actorValue, float delta)
 {
-	float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
-	float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
-	float avAtLimit = ceil(totalAV * Settings::GetDamageLimit(actorValue));
-	float damageGoal = totalAV - avAtLimit;
+	auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
+	auto damage = damageTracker->GetAVDamage(actorValue);
 
+	if (delta < 0)
+	{	
+		float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
+		float totalAV = currentMaxAV + damage;
+		float avAtLimit = ceil(totalAV * Settings::GetDamageLimit(actorValue));
+		float damageGoal = totalAV - avAtLimit;
+	
+		if (damage > (damageGoal))
+		{
+			damageTracker->SetAVAccumulator(actorValue, 0.0f);
 
-	if (damageTracker->GetAVDamage(actorValue) > (damageGoal))
-	{
-		damageTracker->SetAVAccumulator(actorValue, 0.0f);
-
-		damageTracker->SetAVDamage(actorValue, damageGoal);
-		player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, (avAtLimit - currentMaxAV));
+			damageTracker->SetAVDamage(actorValue, damageGoal);
+			player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, (avAtLimit - currentMaxAV));
+		}
 	}
+
+	Globals::SetAVUIGlobal(actorValue, (damage / (damageTracker->GetActorValueMax(player, actorValue) + damage)) * 100.00f);
 }
 
 float PlayerAVDamageManager::PlayerCheckClamp(RE::PlayerCharacter* a1, int32_t a2)

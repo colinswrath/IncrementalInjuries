@@ -18,11 +18,8 @@ private:
 	static void UpdateStaminaSink(RE::Actor* aActor, uint32_t aActorValue, float aOld, float aDelta);
 	static void UpdateMagickaSink(RE::Actor* aActor, uint32_t aActorValue, float aOld, float aDelta);
 
-	static void CheckAVLimit(RE::PlayerCharacter* player, PlayerAV::ActorValueDamage* damageTracker, RE::ActorValue actorValue);
+	static void CheckAVLimit(RE::PlayerCharacter* player, RE::ActorValue actorValue, float delta);
 	inline static REL::Relocation<decltype(PlayerCheckClamp)> _PlayerCheckClamp;
-
-	inline static std::int32_t OnFrameUpdate(std::int64_t a1);
-	inline static REL::Relocation<decltype(OnFrameUpdate)> _OnFrameFunction;
 
 	inline static REL::Relocation<decltype(UpdateHealthSink)> _OnHealthUpdate;
 	inline static REL::Relocation<decltype(UpdateStaminaSink)> _OnStaminaUpdate;
