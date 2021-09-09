@@ -3,12 +3,18 @@
 
 namespace Serialization
 {
-	enum
+	enum : std::uint32_t
 	{
 		kSerializationVersion = 1,
 		kOw = 'OWDA',
 		kDamageValues = 'DAVA'
 	};
+
+	/*
+	inline constexpr std::uint32_t kSerializationVersion = 1;
+	inline constexpr std::uint32_t kOw = 'OWDA';
+	inline constexpr std::uint32_t kDamageValues = 'DAVA';
+	*/
 
 	inline void SaveCallback(SKSE::SerializationInterface* a_intfc)
 	{

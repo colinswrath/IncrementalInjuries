@@ -7,15 +7,16 @@ public:
 	inline static RE::TESGlobal* HealthGlobal;
 	inline static RE::TESGlobal* StaminaGlobal;
 	inline static RE::TESGlobal* MagickaGlobal;
+	inline static std::string fileName = "IncrementalInjuries.esp";
 
 
 	inline static void LoadGlobals()
 	{
 		logger::info("LoadGlobals");
 
-		auto hGlobal = RE::TESGlobal::LookupByEditorID<RE::TESGlobal>("HealthPenaltyUI");
-		auto sGlobal = RE::TESGlobal::LookupByEditorID<RE::TESGlobal>("StaminaPenaltyUI");
-		auto mGlobal = RE::TESGlobal::LookupByEditorID<RE::TESGlobal>("MagickaPenaltyUI");
+		auto hGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x000800, fileName);
+		auto sGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x0085E7, fileName);
+		auto mGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x0085E8, fileName);
 
 		if (hGlobal && sGlobal && mGlobal)
 		{
