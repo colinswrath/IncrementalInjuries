@@ -7,10 +7,15 @@ class Settings
 public:
 	inline static float HealthDamageMult;
 	inline static float HealthDamageLimit;
+	inline static float HealthSleepPerc;
+
 	inline static float StaminaDamageMult;
 	inline static float StaminaDamageLimit;
+	inline static float StaminaSleepPerc;
+
 	inline static float MagickaDamageMult;
 	inline static float MagickaDamageLimit;
+	inline static float MagickaSleepPerc;
 
 	inline static float MultMax = 5.0;
 
@@ -133,25 +138,58 @@ public:
 		}
 	}
 
+	inline static float GetSleepPercent(RE::ActorValue av)
+	{
+		switch (av)
+		{
+		case RE::ActorValue::kHealth:
+			return HealthSleepPerc;
+			break;
+		case RE::ActorValue::kStamina:
+			return StaminaSleepPerc;
+			break;
+		case RE::ActorValue::kMagicka:
+			return MagickaSleepPerc;
+			break;
+		default:
+			logger::error("GetDamageLimit case invalid.");
+			return 0.0;
+			break;
+		}
+	}
+
 	inline static void LoadSettings()
 	{
 		CSimpleIniA ini;
 		ini.SetUnicode();
 		ini.LoadFile(R"(.\Data\SKSE\Plugins\IncrementalInjuries.ini)");
 
-		auto hMultIni = (float)ini.GetDoubleValue("Health", "fHealthDamageMult", 0.1);
+		auto hMultIni = (float)ini.GetDoubleValue("Health", "fHealthDamageMult", 0.05);
 		auto hLimIni = (float)ini.GetDoubleValue("Health", "fHealthDamageLimit", 0.5);
+		auto hSleepIni = (float)ini.GetDoubleValue("Health", "fHealthPercRestorePerHour", 0.25);
+
 		auto sMultIni = (float)ini.GetDoubleValue("Stamina", "fStaminaDamageMult", 0.02);
 		auto sLimIni = (float)ini.GetDoubleValue("Stamina", "fStaminaDamageLimit", 0.5);
+		auto sSleepIni = (float)ini.GetDoubleValue("Stamina", "fStaminaPercRestorePerHour", 0.25);
+
+
 		auto mMultIni = (float)ini.GetDoubleValue("Magicka", "fMagickaDamageMult", 0.02);
 		auto mLimIni = (float)ini.GetDoubleValue("Magicka", "fMagickaDamageLimit", 0.5);
+		auto mSleepIni = (float)ini.GetDoubleValue("Magicka", "fMagickaPercRestorePerHour", 0.25);
+
 
 		//Validation
-		(hMultIni < 0.0 || hMultIni > 1.0) ? HealthDamageMult = 0.1f : HealthDamageMult = hMultIni;
+		(hMultIni < 0.0 || hMultIni > 5.0) ? HealthDamageMult = 0.05f : HealthDamageMult = hMultIni;
 		(hLimIni < 0.0 || hLimIni > 1.0) ? HealthDamageLimit = 0.5f : HealthDamageLimit = hLimIni;
-		(sMultIni < 0.0 || sMultIni > 1.0) ? StaminaDamageMult = 0.03f : StaminaDamageMult = sMultIni;
+		(hSleepIni < 0.0 || hSleepIni > 1.0) ? HealthSleepPerc = 0.25f : HealthSleepPerc = hSleepIni;
+
+	
+		(sMultIni < 0.0 || sMultIni > 5.0) ? StaminaDamageMult = 0.02f : StaminaDamageMult = sMultIni;
 		(sLimIni < 0.0 || sLimIni > 1.0) ? StaminaDamageLimit = 0.5f : StaminaDamageLimit = sLimIni;
-		(mMultIni < 0.0 || mMultIni > 1.0) ? MagickaDamageMult = 0.03f : MagickaDamageMult = mMultIni;
+		(sSleepIni < 0.0 || sSleepIni > 1.0) ? StaminaSleepPerc = 0.25f : StaminaSleepPerc = sSleepIni;
+
+		(mMultIni < 0.0 || mMultIni > 5.0) ? MagickaDamageMult = 0.02f : MagickaDamageMult = mMultIni;
 		(mLimIni < 0.0 || mLimIni > 1.0) ? MagickaDamageLimit = 0.5f : MagickaDamageLimit = mLimIni;
+		(mSleepIni < 0.0 || mSleepIni > 1.0) ? MagickaSleepPerc = 0.25f : MagickaSleepPerc = mSleepIni;
 	}
 };

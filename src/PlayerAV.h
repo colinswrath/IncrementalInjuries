@@ -18,16 +18,21 @@ namespace PlayerAV
 		}
 
 		float GetAVDamage(RE::ActorValue av);
-
 		void SetAVDamage(RE::ActorValue av, float damage);
-
 		float GetAVAccumulator(RE::ActorValue av);
-
 		void SetAVAccumulator(RE::ActorValue av, float damage);
-
 		bool SerializeSave(SKSE::SerializationInterface* a_intfc);
 		bool SerializeSave(SKSE::SerializationInterface* a_intfc, uint32_t a_type, uint32_t a_version);
 		bool DeserializeLoad(SKSE::SerializationInterface* a_intfc);
+		float GetTotalAVWithDamage(RE::ActorValue av);
+		float GetAVSleepRestore(RE::ActorValue av);
+		void SetAVSleepRestore(RE::ActorValue av, float amount);
+
+		void Revert();
+
+		float _sleepRestoreHealthAmount;
+		float _sleepRestoreStaminaAmount;
+		float _sleepRestoreMagickaAmount;
 
 	private:
 
@@ -48,6 +53,9 @@ namespace PlayerAV
 			_healthAccumulator = 0.0f;
 			_staminaAccumulator = 0.0f;
 			_magickaAccumulator = 0.0f;
+			_sleepRestoreHealthAmount = 0.0f;
+			_sleepRestoreStaminaAmount = 0.0f;
+			_sleepRestoreMagickaAmount = 0.0f;
 		}
 
 		float _healthDamage;
@@ -57,5 +65,6 @@ namespace PlayerAV
 		float _healthAccumulator;
 		float _staminaAccumulator;
 		float _magickaAccumulator;
+		
 	};
 }

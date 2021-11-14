@@ -15,15 +15,21 @@ public:
 		logger::info("LoadGlobals");
 
 		auto hGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x000800, fileName);
-		auto sGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x0085E7, fileName);
-		auto mGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x0085E8, fileName);
+		auto sGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x000804, fileName);
+		auto mGlobal = RE::TESDataHandler::GetSingleton()->LookupForm<RE::TESGlobal>(0x000806, fileName);
 
 		if (hGlobal && sGlobal && mGlobal)
 		{
+			logger::info("Globals Loaded");
+
 			GlobalsFound = true;
 			HealthGlobal = hGlobal;
 			StaminaGlobal = sGlobal;
 			MagickaGlobal = mGlobal;
+		}
+		else
+		{
+			logger::info("Globals not Loaded");
 		}
 	}
 

@@ -61,6 +61,7 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 		break;
 	case SKSE::MessagingInterface::kDataLoaded :
 		Globals::LoadGlobals();
+		PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
 		PlayerAVDamageManager::InstallVHook();
 		break;
 	}
@@ -75,7 +76,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_
 	Hooks::Install();
 	Events::Register();
 	Settings::LoadSettings();
-
+	
 	auto messaging = SKSE::GetMessagingInterface();
 	if (!messaging->RegisterListener(InitListener))
 	{
@@ -90,6 +91,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_
 	serialization->SetUniqueID(Serialization::kOw);
 	serialization->SetSaveCallback(Serialization::SaveCallback);
 	serialization->SetLoadCallback(Serialization::LoadCallback);
+	serialization->SetRevertCallback(Serialization::RevertCallback);
 	return true;
 }
 

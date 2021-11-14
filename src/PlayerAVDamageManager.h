@@ -7,8 +7,12 @@ public:
 	static void InstallHook();
 	static void InstallVHook();
 	static void RestorePlayerAV(RE::ActorValue actorValue);
+	static void RestorePlayerAVAmount(RE::ActorValue actorValue, float amount);
 	static void SetAccumulators(RE::ActorValue actorValue, float val);
 
+	static void SetPlayerProperty(RE::PlayerCharacter* a1);
+	
+	inline static RE::PlayerCharacter* Player;
 private:
 	PlayerAVDamageManager() = default;
 	static float DamagePlayerAV(RE::PlayerCharacter* player, RE::ActorValue actorValue, float damageTaken);

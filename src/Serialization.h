@@ -1,5 +1,7 @@
 #pragma once
 #include "PlayerAV.h"
+#include "GlobalUIHandler.h"
+#include "PlayerAVDamageManager.h"
 
 namespace Serialization
 {
@@ -16,8 +18,18 @@ namespace Serialization
 	inline constexpr std::uint32_t kDamageValues = 'DAVA';
 	*/
 
+	inline void UpdateGlobal(RE::ActorValue actorValue)
+	{
+		auto damageTracker = PlayerAV::ActorValueDamage::GetSingleton();
+		auto damage = damageTracker->GetAVDamage(actorValue);
+		auto player = RE::PlayerCharacter::GetSingleton();
+
+		Globals::SetAVUIGlobal(actorValue, (damage / (damageTracker->GetActorValueMax(player, actorValue) + damage)) * 100.00f);
+	}
+
 	inline void SaveCallback(SKSE::SerializationInterface* a_intfc)
 	{
+		PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
 		auto playerAv = PlayerAV::ActorValueDamage::GetSingleton();
 
 		if (!playerAv->SerializeSave(a_intfc, Serialization::kDamageValues, Serialization::kSerializationVersion))
@@ -28,12 +40,13 @@ namespace Serialization
 
 	inline void LoadCallback(SKSE::SerializationInterface* a_intfc)
 	{
+		PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
 		auto playerAv = PlayerAV::ActorValueDamage::GetSingleton();
 
 		uint32_t type;
 		uint32_t version;
 		uint32_t length;
-
+		bool loaded = false;
 		while (a_intfc->GetNextRecordInfo(type, version, length))
 		{
 			if (version != Serialization::kSerializationVersion)
@@ -47,13 +60,24 @@ namespace Serialization
 			case Serialization::kDamageValues:
 				if (!playerAv->DeserializeLoad(a_intfc))
 				{
-					logger::error("Failed to load damage values!\n");
+					logger::info("Failed to load damage values!\n");
+				}
+				else
+				{
+					loaded = true;
 				}
 				break;
 			default:
 				logger::error(FMT_STRING("Unrecognized signature type! {}"), type);
 				break;
 			}
+		}
+
+		if (loaded)
+		{
+			UpdateGlobal(RE::ActorValue::kStamina);
+			UpdateGlobal(RE::ActorValue::kMagicka);
+			UpdateGlobal(RE::ActorValue::kHealth);
 		}
 	}
 
@@ -109,7 +133,14 @@ namespace Serialization
 		return true;
 	}
 
+	inline void RevertCallback(SKSE::SerializationInterface*)
+	{
+		auto playerAv = PlayerAV::ActorValueDamage::GetSingleton();
+		playerAv->Revert();
+	}
+
 	void SaveCallback(SKSE::SerializationInterface* a_intfc);
 	void LoadCallback(SKSE::SerializationInterface* a_intfc);
+	void RevertCallback(SKSE::SerializationInterface*);
 
 }

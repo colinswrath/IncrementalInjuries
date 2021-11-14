@@ -116,7 +116,7 @@ namespace PlayerAV
 
 		if (!Serialization::Load(a_intfc, damageValues))
 		{
-			logger::error("Failed to load damage values!");
+			logger::info("Failed to load damage values!");
 			return false;
 		}
 
@@ -129,7 +129,62 @@ namespace PlayerAV
 
 		return true;
 	}
+	
+	void ActorValueDamage::Revert()
+	{
+		auto playerAVDamage = PlayerAV::ActorValueDamage::GetSingleton();
 
+		playerAVDamage->_healthDamage = 0.0f;
+		playerAVDamage->_staminaDamage = 0.0f;
+		playerAVDamage->_magickaDamage = 0.0f;
+		playerAVDamage->_healthAccumulator = 0.0f;
+		playerAVDamage->_staminaAccumulator = 0.0f;
+		playerAVDamage->_magickaAccumulator = 0.0f;
+	}
 
+	float ActorValueDamage::GetTotalAVWithDamage(RE::ActorValue av)
+	{
+		float currentMaxAV = GetActorValueMax(RE::PlayerCharacter::GetSingleton(), av);
+		return currentMaxAV + GetAVDamage(av);
+	}
+
+	float ActorValueDamage::GetAVSleepRestore(RE::ActorValue av)
+	{
+		switch (av)
+		{
+		case RE::ActorValue::kHealth:
+			return _sleepRestoreHealthAmount;
+			break;
+		case RE::ActorValue::kStamina:
+			return _sleepRestoreStaminaAmount;
+			break;
+		case RE::ActorValue::kMagicka:
+			return _sleepRestoreMagickaAmount;
+			break;
+		default:
+			logger::error("case not valid.");
+			return 0.0f;
+			break;
+		}
+	}
+
+	void ActorValueDamage::SetAVSleepRestore(RE::ActorValue av, float amount)
+	{
+		switch (av)
+		{
+		case RE::ActorValue::kHealth:
+			_sleepRestoreHealthAmount = amount;
+			break;
+		case RE::ActorValue::kStamina:
+			_sleepRestoreStaminaAmount = amount;
+			break;
+		case RE::ActorValue::kMagicka:
+			_sleepRestoreMagickaAmount = amount;
+			break;
+		default:
+			logger::error("case not valid.");
+			break;
+		}
+	}
 	
 }

@@ -25,11 +25,10 @@ void PlayerAVDamageManager::InstallVHook()
 
 void PlayerAVDamageManager::UpdateMagickaSink(RE::Actor* aActor, uint32_t aActorValue, float aOld, float aDelta)
 {
-	auto player = RE::PlayerCharacter::GetSingleton();
 
-	if (aActor == player)
+	if (aActor == Player)
 	{
-		CheckAVLimit(player, RE::ActorValue::kMagicka, aDelta);
+		CheckAVLimit(Player, RE::ActorValue::kMagicka, aDelta);
 	}
 
 	_OnMagickaUpdate(aActor, aActorValue, aOld, aDelta);
@@ -37,11 +36,10 @@ void PlayerAVDamageManager::UpdateMagickaSink(RE::Actor* aActor, uint32_t aActor
 
 void PlayerAVDamageManager::UpdateStaminaSink(RE::Actor* aActor, uint32_t aActorValue, float aOld, float aDelta)
 {
-	auto player = RE::PlayerCharacter::GetSingleton();
 	
-	if (aActor == player)
+	if (aActor == Player)
 	{
-		CheckAVLimit(player, RE::ActorValue::kStamina, aDelta);
+		CheckAVLimit(Player, RE::ActorValue::kStamina, aDelta);
 	}
 
 	_OnStaminaUpdate(aActor, aActorValue, aOld, aDelta);
@@ -49,12 +47,11 @@ void PlayerAVDamageManager::UpdateStaminaSink(RE::Actor* aActor, uint32_t aActor
 
 void PlayerAVDamageManager::UpdateHealthSink(RE::Actor* aActor, int32_t aActorValue, float aOld, float aDelta)
 {
-	auto player = RE::PlayerCharacter::GetSingleton();
-	if (aActor == player)
-	{
-		CheckAVLimit(player,RE::ActorValue::kHealth, aDelta);
-	}
 
+	if (aActor == Player)
+	{
+		CheckAVLimit(Player, RE::ActorValue::kHealth, aDelta);
+	}
 	_OnHealthUpdate(aActor,aActorValue, aOld, aDelta);
 }
 
@@ -79,8 +76,7 @@ void PlayerAVDamageManager::CheckAVLimit(RE::PlayerCharacter* player, RE::ActorV
 			player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, (avAtLimit - currentMaxAV));
 		}
 	}
-
-	Globals::SetAVUIGlobal(actorValue, (damage / (damageTracker->GetActorValueMax(player, actorValue) + damage)) * 100.00f);
+	Globals::SetAVUIGlobal(actorValue, (damageTracker->GetAVDamage(actorValue) / (damageTracker->GetActorValueMax(player, actorValue) + damageTracker->GetAVDamage(actorValue))) * 100.00f);
 }
 
 float PlayerAVDamageManager::PlayerCheckClamp(RE::PlayerCharacter* a1, int32_t a2)
@@ -89,6 +85,7 @@ float PlayerAVDamageManager::PlayerCheckClamp(RE::PlayerCharacter* a1, int32_t a
 	float posDamageFloat = damageRecieved * -1;
 	if (posDamageFloat >= 0)
 	{
+		SetPlayerProperty(a1);
 		RE::ActorValue damagedAv = RE::ActorValue(a2);
 		switch (damagedAv)
 		{
@@ -114,11 +111,20 @@ void PlayerAVDamageManager::SetAccumulators(RE::ActorValue actorValue, float val
 	PlayerAV::ActorValueDamage::GetSingleton()->SetAVAccumulator(actorValue, val);
 }
 
+void PlayerAVDamageManager::RestorePlayerAVAmount(RE::ActorValue actorValue, float amount)
+{
+	SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
+	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
+	Player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, amount);
+
+	avTracker->SetAVDamage(actorValue, avTracker->GetAVDamage(actorValue) - amount);
+}
+
 void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 {
-	auto player = RE::PlayerCharacter::GetSingleton();
+	SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
 	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
-	player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, PlayerAV::ActorValueDamage::GetSingleton()->GetAVDamage(actorValue));
+	Player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, avTracker->GetAVDamage(actorValue));
 
 	avTracker->SetAVDamage(actorValue,0.0f);
 }
@@ -131,7 +137,8 @@ float PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Act
 	damageTracker->SetAVAccumulator(actorValue, damageTracker->GetAVAccumulator(actorValue) + (damageTaken * Settings::GetDamageMult(actorValue)));
 
 	float currentMaxAV = damageTracker->GetActorValueMax(player, actorValue);
-	float totalAV = currentMaxAV + damageTracker->GetAVDamage(actorValue);
+	float totalAV = damageTracker->GetTotalAVWithDamage(actorValue);
+
 	float avAtLimit = ceil(totalAV*Settings::GetDamageLimit(actorValue));
 	float damageGoal = totalAV - avAtLimit;
 	
@@ -162,5 +169,14 @@ float PlayerAVDamageManager::DamagePlayerAV(RE::PlayerCharacter* player, RE::Act
 	}
 	return delta;
 }
+
+void PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter* playerCharacter)
+{
+	if(Player == NULL || Player != playerCharacter)
+	{
+		Player = playerCharacter;
+	}
+}
+
 
 
