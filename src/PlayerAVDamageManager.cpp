@@ -30,7 +30,6 @@ void PlayerAVDamageManager::UpdateMagickaSink(RE::Actor* aActor, uint32_t aActor
 	{
 		CheckAVLimit(Player, RE::ActorValue::kMagicka, aDelta);
 	}
-
 	_OnMagickaUpdate(aActor, aActorValue, aOld, aDelta);
 }
 
@@ -41,7 +40,6 @@ void PlayerAVDamageManager::UpdateStaminaSink(RE::Actor* aActor, uint32_t aActor
 	{
 		CheckAVLimit(Player, RE::ActorValue::kStamina, aDelta);
 	}
-
 	_OnStaminaUpdate(aActor, aActorValue, aOld, aDelta);
 }
 
