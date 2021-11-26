@@ -6,20 +6,24 @@
 
 void PlayerAVDamageManager::InstallHook()
 {
-	static REL::Relocation<std::uintptr_t> PlayerCheckClampHook{ REL::ID(39602), 0x91 };
+	//static REL::Relocation<std::uintptr_t> PlayerCheckClampHook{ REL::ID(39602), 0x91 };
+	static REL::Relocation<std::uintptr_t> PlayerCheckClampHook{ REL::ID(40688), 0x8D };
 	auto& trampoline = SKSE::GetTrampoline();
 	_PlayerCheckClamp = trampoline.write_branch<5>(PlayerCheckClampHook.address(), PlayerCheckClamp);
 }
 
 void PlayerAVDamageManager::InstallVHook()
 {
-	REL::Relocation<std::uintptr_t> healthUpdateSink{ REL::ID(517380) };
+	//REL::Relocation<std::uintptr_t> healthUpdateSink{ REL::ID(517380) };
+	REL::Relocation<std::uintptr_t> healthUpdateSink{ REL::ID(403910) };
 	_OnHealthUpdate = healthUpdateSink.write_vfunc(0, UpdateHealthSink);
 
-	REL::Relocation<std::uintptr_t> staminaUpdateSink{ REL::ID(517382) };
+	//REL::Relocation<std::uintptr_t> staminaUpdateSink{ REL::ID(517382) };
+	REL::Relocation<std::uintptr_t> staminaUpdateSink{ REL::ID(403911) };
 	_OnStaminaUpdate = staminaUpdateSink.write_vfunc(0, UpdateStaminaSink);
 
-	REL::Relocation<std::uintptr_t> magickaUpdateSink{ REL::ID(517381) };
+	//REL::Relocation<std::uintptr_t> magickaUpdateSink{ REL::ID(517381) };
+	REL::Relocation<std::uintptr_t> magickaUpdateSink{ REL::ID(403910) };
 	_OnMagickaUpdate = magickaUpdateSink.write_vfunc(0, UpdateMagickaSink);
 }
 
