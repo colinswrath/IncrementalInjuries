@@ -1,22 +1,23 @@
-#include "Offsets.h"
+#include "Cache.h"
 #include "Serialization.h"
 #include "Events.h"
 #include "Hooks.h"
 #include "Settings.h"
 #include "GlobalUIHandler.h"
 #include "PapyrusPLayerAV.h"
+#include "Version.h"
 
-extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * a_skse, SKSE::PluginInfo * a_info)
+void InitLogger()
 {
 #ifndef NDEBUG
 	auto sink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
 #else
 	auto path = logger::log_directory();
 	if (!path) {
-		return false;
+		return;
 	}
 
-	*path /= "IncrementalInjuries.log"sv;
+	*path /= fmt::format("{}.log"sv, Version::PROJECT);
 	auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
 #endif
 
@@ -30,27 +31,21 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface * 
 #endif
 
 	spdlog::set_default_logger(std::move(log));
-	spdlog::set_pattern("%g(%#): [%^%l%$] %v"s);
+	spdlog::set_pattern("%s(%#): [%^%l%$] %v"s);
 
-	logger::info("IncrementalInjuries v1.0.0");
-
-	a_info->infoVersion = SKSE::PluginInfo::kVersion;
-	a_info->name = "IncrementalInjuries";
-	a_info->version = 1;
-
-	if (a_skse->IsEditor()) {
-		logger::critical("Loaded in editor, marking as incompatible"sv);
-		return false;
-	}
-
-	const auto ver = a_skse->RuntimeVersion();
-	if (ver < SKSE::RUNTIME_1_5_39) {
-		logger::critical(FMT_STRING("Unsupported runtime version {}"), ver.string());
-		return false;
-	}
-	
-	return true;
+	logger::info(FMT_STRING("{} v{}"), Version::PROJECT, Version::NAME);
 }
+
+extern "C" DLLEXPORT constexpr auto SKSEPlugin_Version =
+[]() {
+	SKSE::PluginVersionData v{};
+	v.PluginVersion(Version::MAJOR);
+	v.PluginName(Version::PROJECT);
+	v.AuthorName("colinswrath"sv);
+	v.UsesAddressLibrary(true);
+	return v;
+}();
+
 
 void InitListener(SKSE::MessagingInterface::Message* a_msg)
 {
@@ -69,6 +64,7 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 
 extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface * a_skse)
 {
+	InitLogger();
 	logger::info("IncrementalInjuries loaded"sv);
 
 	SKSE::Init(a_skse);

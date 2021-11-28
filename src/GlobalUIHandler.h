@@ -7,6 +7,7 @@ public:
 	inline static RE::TESGlobal* HealthGlobal;
 	inline static RE::TESGlobal* StaminaGlobal;
 	inline static RE::TESGlobal* MagickaGlobal;
+
 	inline static std::string fileName = "IncrementalInjuries.esp";
 
 

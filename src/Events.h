@@ -95,18 +95,6 @@ namespace Events
 			RestoreAVDamagePercent(RE::ActorValue::kHealth);
 			RestoreAVDamagePercent(RE::ActorValue::kMagicka);
 			RestoreAVDamagePercent(RE::ActorValue::kStamina);
-
-
-
-			/*
-			PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue::kHealth);
-			PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue::kStamina);
-			PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue::kMagicka);
-
-			Globals::SetAVUIGlobal(RE::ActorValue::kHealth, 0.0f);
-			Globals::SetAVUIGlobal(RE::ActorValue::kStamina, 0.0f);
-			Globals::SetAVUIGlobal(RE::ActorValue::kMagicka, 0.0f);
-			*/
 			
 			return RE::BSEventNotifyControl::kContinue;
 		}

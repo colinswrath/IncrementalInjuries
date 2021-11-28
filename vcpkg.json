@@ -1,13 +1,12 @@
 {
-  "name": "exampleproject",
-  "version-string": "1.0.0",
-  "description": "An example project built using CommonLibSSE",
-  "homepage": "https://github.com/Ryan-rsm-McKenzie/ExamplePlugin-CommonLibSSE",
+  "name": "incrementalinjuries",
+  "version-string": "1.2.5",
+  "description": "",
+  "homepage": "https://github.com/colinswrath/IncrementalInjuries",
   "license": "MIT",
   "dependencies": [
-    "boost-atomic",
     "boost-stl-interfaces",
-    "span-lite",
+	"rsm-binary-io",
     "spdlog",
 	"simpleini"
   ]

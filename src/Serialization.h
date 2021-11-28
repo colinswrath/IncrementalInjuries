@@ -29,7 +29,6 @@ namespace Serialization
 
 	inline void SaveCallback(SKSE::SerializationInterface* a_intfc)
 	{
-		PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
 		auto playerAv = PlayerAV::ActorValueDamage::GetSingleton();
 
 		if (!playerAv->SerializeSave(a_intfc, Serialization::kDamageValues, Serialization::kSerializationVersion))
@@ -40,7 +39,6 @@ namespace Serialization
 
 	inline void LoadCallback(SKSE::SerializationInterface* a_intfc)
 	{
-		PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
 		auto playerAv = PlayerAV::ActorValueDamage::GetSingleton();
 
 		uint32_t type;
@@ -142,5 +140,4 @@ namespace Serialization
 	void SaveCallback(SKSE::SerializationInterface* a_intfc);
 	void LoadCallback(SKSE::SerializationInterface* a_intfc);
 	void RevertCallback(SKSE::SerializationInterface*);
-
 }

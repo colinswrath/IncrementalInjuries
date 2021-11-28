@@ -39,8 +39,9 @@ namespace PlayerAV
 		static float GetActorValueMod(RE::PlayerCharacter* player, int32_t integer, RE::ActorValue value)
 		{
 			using func_t = decltype(&GetActorValueMod);
-
-			REL::Relocation<func_t> func{ REL::ID(37524) };
+			
+			//REL::Relocation<func_t> func{ REL::ID(37524) };
+			REL::Relocation<func_t> func{ REL::ID(38469) };
 
 			return func(player, integer, value);
 		}
