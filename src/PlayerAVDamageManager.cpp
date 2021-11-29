@@ -25,7 +25,7 @@ void PlayerAVDamageManager::InstallVHook()
 
 void PlayerAVDamageManager::UpdateMagickaSink(RE::Actor* aActor, uint32_t aActorValue, float aOld, float aDelta)
 {
-
+	Player = Cache::GetPlayerSingleton();
 	if (aActor == Player)
 	{
 		CheckAVLimit(Player, RE::ActorValue::kMagicka, aDelta);
@@ -35,7 +35,7 @@ void PlayerAVDamageManager::UpdateMagickaSink(RE::Actor* aActor, uint32_t aActor
 
 void PlayerAVDamageManager::UpdateStaminaSink(RE::Actor* aActor, uint32_t aActorValue, float aOld, float aDelta)
 {
-
+	Player = Cache::GetPlayerSingleton();
 	if (aActor == Player)
 	{
 		CheckAVLimit(Player, RE::ActorValue::kStamina, aDelta);
@@ -45,7 +45,7 @@ void PlayerAVDamageManager::UpdateStaminaSink(RE::Actor* aActor, uint32_t aActor
 
 void PlayerAVDamageManager::UpdateHealthSink(RE::Actor* aActor, int32_t aActorValue, float aOld, float aDelta)
 {
-
+	Player = Cache::GetPlayerSingleton();
 	if (aActor == Player)
 	{
 		CheckAVLimit(Player, RE::ActorValue::kHealth, aDelta);
@@ -112,7 +112,7 @@ void PlayerAVDamageManager::SetAccumulators(RE::ActorValue actorValue, float val
 
 void PlayerAVDamageManager::RestorePlayerAVAmount(RE::ActorValue actorValue, float amount)
 {
-	Player = RE::PlayerCharacter::GetSingleton();
+	Player = Cache::GetPlayerSingleton();
 	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
 	Player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, amount);
 
@@ -121,7 +121,7 @@ void PlayerAVDamageManager::RestorePlayerAVAmount(RE::ActorValue actorValue, flo
 
 void PlayerAVDamageManager::RestorePlayerAV(RE::ActorValue actorValue)
 {
-	Player = RE::PlayerCharacter::GetSingleton();
+	Player = Cache::GetPlayerSingleton();
 	auto avTracker = PlayerAV::ActorValueDamage::GetSingleton();
 	Player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kPermanent, actorValue, avTracker->GetAVDamage(actorValue));
 

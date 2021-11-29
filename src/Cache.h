@@ -5,17 +5,17 @@
 namespace Cache
 {
 
-	class CachedAddresses
-	{
-	public:
+	//class CachedAddresses
+	//{
+	//public:
 
-		uintptr_t PlayerSingletonAddress;
+		inline uintptr_t PlayerSingletonAddress;
 
-		static CachedAddresses* GetSingleton()
-		{
-			static CachedAddresses addresses;
-			return &addresses;
-		}
+		//static CachedAddresses* GetSingleton()
+		//{
+		//	static CachedAddresses addresses;
+		//	return &addresses;
+		//}
 
 		inline void SetPlayerSingletonAddress()
 		{
@@ -27,6 +27,6 @@ namespace Cache
 			REL::Relocation<RE::NiPointer<RE::PlayerCharacter>*> singleton{ PlayerSingletonAddress };
 			return singleton->get();
 		}
-	};
+	//};
 }
 

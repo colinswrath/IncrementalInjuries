@@ -56,7 +56,8 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 		break;
 	case SKSE::MessagingInterface::kDataLoaded :
 		Globals::LoadGlobals();
-		PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
+		//PlayerAVDamageManager::SetPlayerProperty(RE::PlayerCharacter::GetSingleton());
+		Cache::SetPlayerSingletonAddress();
 		PlayerAVDamageManager::InstallVHook();
 		break;
 	}
