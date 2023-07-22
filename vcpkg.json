@@ -1,13 +1,20 @@
 {
   "name": "incrementalinjuries",
-  "version-string": "1.2.5",
+  "version-string": "1.2.6",
   "description": "",
   "homepage": "https://github.com/colinswrath/IncrementalInjuries",
   "license": "MIT",
   "dependencies": [
     "boost-stl-interfaces",
-	"rsm-binary-io",
+    "rsm-binary-io",
     "spdlog",
-	"simpleini"
+    "simpleini"
+  ],
+  "builtin-baseline": "9d47b24eacbd1cd94f139457ef6cd35e5d92cc84",
+  "overrides": [
+    {
+      "name": "fmt",
+      "version": "8.0.1"
+    }
   ]
 }
